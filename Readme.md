@@ -1,1 +1,1 @@
-# Bos kullanim yapmayalimm
+# readme
