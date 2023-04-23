@@ -1,1 +1,1 @@
-# Bos kullanim yapmayalim
+# Bos kullanim yapmayalimm
