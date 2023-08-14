@@ -48,42 +48,48 @@ end
 addCommandHandler("mermi", mermiBilgi)
 
 function mermiAl(thePlayer, cmd, silahTuru, sarjorMiktari)
-	for index, colShape in ipairs(getElementsByType("colshape", resourceRoot)) do
-		if getElementData(colShape, "mermiYeri") then
-			if isElementWithinColShape(thePlayer, colShape) then
-				local playerTeam = getPlayerTeam(thePlayer)
-				local playerTeamType = getElementData(playerTeam, "type")
-				if playerTeamType == 1 or playerTeamType == 0 then
-					if not silahTuru or not silahTurleri[string.lower(silahTuru)] or not sarjorMiktari then
-						outputChatBox(" >> #f0f0f0SÖZDİZİMİ: /" .. cmd .. " [Mermi Türü] [Şarjör Miktarı]", thePlayer, 255, 0, 0, true)
-						return false
-					end
-					if silahTurleri[string.lower(silahTuru)] then
-						local playerWeapons = getPedWeapons(thePlayer)
-						if not playerWeapons[1] then
-							outputChatBox(" >> #f0f0f0Bu mermiyi satın almak için uygun silahınız yok.", thePlayer, 255, 0, 0, true)
-							return false
-						end
-						
-						for index, weaponID in ipairs(playerWeapons) do
-							if weaponID == silahTurleri[string.lower(silahTuru)][1] then
-								local toplamFiyat = silahTurleri[string.lower(silahTuru)][3] * sarjorMiktari
-								outputChatBox(" >> #f0f0f0Toplam tutar: " .. toplamFiyat .. "TL Satışı onaylamak için /mermionayla, iptal etmek için /mermiiptal yazın!", thePlayer, 0, 0, 255, true)
-								setElementData(thePlayer, "mermi:tutar", toplamFiyat)
-								setElementData(thePlayer, "mermi:sarjorMiktari", sarjorMiktari)
-								setElementData(thePlayer, "mermi:silahTuru", silahTurleri[string.lower(silahTuru)][1])
-								setElementData(thePlayer, "mermi:mermiMiktari", silahTurleri[string.lower(silahTuru)][2])
-								return true
-							else
-								outputChatBox(" >> #f0f0f0Bu mermiyi satın almak için uygun silahınız yok.", thePlayer, 255, 0, 0, true)
-								return false
-							end
-						end
-					end
-				end
-			end
-		end
-	end	
+    for index, colShape in ipairs(getElementsByType("colshape", resourceRoot)) do
+        if getElementData(colShape, "mermiYeri") then
+            if isElementWithinColShape(thePlayer, colShape) then
+                local playerTeam = getPlayerTeam(thePlayer)
+                local playerTeamType = getElementData(playerTeam, "type")
+                if playerTeamType == 1 or playerTeamType == 0 then
+                    if not silahTuru or not silahTurleri[string.lower(silahTuru)] or not sarjorMiktari then
+                        outputChatBox(" >> #f0f0f0SÖZDİZİMİ: /" .. cmd .. " [Mermi Türü] [Şarjör Miktarı]", thePlayer, 255, 0, 0, true)
+                        return false
+                    end
+                    if silahTurleri[string.lower(silahTuru)] then
+                        local playerWeapons = getPedWeapons(thePlayer)
+                        if not playerWeapons[1] then
+                            outputChatBox(" >> #f0f0f0Bu mermiyi satın almak için uygun silahınız yok.", thePlayer, 255, 0, 0, true)
+                            return false
+                        end
+                        
+                        for index, weaponID in ipairs(playerWeapons) do
+                            if weaponID == silahTurleri[string.lower(silahTuru)][1] then
+                                local normalTutar = silahTurleri[string.lower(silahTuru)][3] * sarjorMiktari
+                                local indirimliTutar = normalTutar
+
+                                if getElementData(thePlayer, "vip") == 1 then
+                                    indirimliTutar = math.floor(normalTutar * 0.95)  -- %5 indirim
+                                end
+
+                                outputChatBox(" >> #f0f0f0Toplam tutar: " .. indirimliTutar .. "TL Satışı onaylamak için /mermionayla, iptal etmek için /mermiiptal yazın!", thePlayer, 0, 0, 255, true)
+                                setElementData(thePlayer, "mermi:tutar", indirimliTutar)
+                                setElementData(thePlayer, "mermi:sarjorMiktari", sarjorMiktari)
+                                setElementData(thePlayer, "mermi:silahTuru", silahTurleri[string.lower(silahTuru)][1])
+                                setElementData(thePlayer, "mermi:mermiMiktari", silahTurleri[string.lower(silahTuru)][2])
+                                return true
+                            else
+                                outputChatBox(" >> #f0f0f0Bu mermiyi satın almak için uygun silahınız yok.", thePlayer, 255, 0, 0, true)
+                                return false
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
 end
 addCommandHandler("mermial", mermiAl)
 
